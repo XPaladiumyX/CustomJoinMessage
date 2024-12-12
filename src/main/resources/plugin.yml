@@ -1,0 +1,4 @@
+name: CustomJoinMessage
+version: '1.1-SNAPSHOT'
+main: skyxnetwork.customJoinMessage.CustomJoinMessage
+api-version: '1.20'
