@@ -2,3 +2,8 @@ name: CustomJoinMessage
 version: '1.1-SNAPSHOT'
 main: skyxnetwork.customJoinMessage.CustomJoinMessage
 api-version: '1.20'
+description: A plugin to manage custom join/leave messages.
+commands:
+  joinmessage:
+    description: Manage custom join/leave messages.
+    usage: /joinmessage [set/reset] [join/leave] [message]
