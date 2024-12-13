@@ -82,12 +82,20 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                     joinMessages.put(player.getName(), message);
                     userdataConfig.set("joinMessages." + player.getName(), message);
                     saveUserDataFile();
-                    player.sendMessage(ChatColor.GREEN + "Custom join message set!");
+
+                    // Afficher le message de confirmation et l'aperçu
+                    String preview = ChatColor.translateAlternateColorCodes('&',
+                            "&8&l[&5&l+&8&l] &f" + message.replace("%player%", player.getName()));
+                    player.sendMessage(ChatColor.GREEN + "Custom join message set!\n" + ChatColor.RESET + preview);
                 } else if ("leave".equalsIgnoreCase(type)) {
                     leaveMessages.put(player.getName(), message);
                     userdataConfig.set("leaveMessages." + player.getName(), message);
                     saveUserDataFile();
-                    player.sendMessage(ChatColor.GREEN + "Custom leave message set!");
+
+                    // Afficher le message de confirmation et l'aperçu
+                    String preview = ChatColor.translateAlternateColorCodes('&',
+                            "&8&l[&c&l-&8&l] &f" + message.replace("%player%", player.getName()));
+                    player.sendMessage(ChatColor.GREEN + "Custom leave message set!\n" + ChatColor.RESET + preview);
                 } else {
                     player.sendMessage(ChatColor.RED + "Invalid type! Use 'join' or 'leave'.");
                 }
