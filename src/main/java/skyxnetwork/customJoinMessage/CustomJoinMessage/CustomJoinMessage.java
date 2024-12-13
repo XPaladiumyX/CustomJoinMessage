@@ -65,6 +65,19 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
             if ("set".equalsIgnoreCase(action) && args.length >= 3) {
                 String message = String.join(" ", args).substring(action.length() + type.length() + 2);
+
+                // Validation de la longueur du message
+                if (message.length() > 30) {
+                    player.sendMessage(ChatColor.RED + "Your custom message cannot exceed 30 characters!");
+                    return true;
+                }
+
+                // Validation des caractères Unicode
+                if (containsUnicode(message)) {
+                    player.sendMessage(ChatColor.RED + "You can't set Unicode characters in your custom message!");
+                    return true;
+                }
+
                 if ("join".equalsIgnoreCase(type)) {
                     joinMessages.put(player.getName(), message);
                     userdataConfig.set("joinMessages." + player.getName(), message);
@@ -106,8 +119,10 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         String customMessage = joinMessages.get(player.getName());
 
         if (customMessage != null) {
-            // Si un message personnalisé est défini, utilisez-le
-            event.setJoinMessage(ChatColor.GREEN + "[+] " + customMessage.replace("%player%", player.getName()));
+            // Style personnalisé pour le message de connexion
+            String styledMessage = ChatColor.translateAlternateColorCodes('&',
+                    "&8&l[&5&l+&8&l] &f" + customMessage.replace("%player%", player.getName()));
+            event.setJoinMessage(styledMessage);
         }
         // Sinon, ne pas modifier pour laisser d'autres plugins gérer le message
     }
@@ -118,8 +133,10 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         String customMessage = leaveMessages.get(player.getName());
 
         if (customMessage != null) {
-            // Si un message personnalisé est défini, utilisez-le
-            event.setQuitMessage(ChatColor.RED + "[-] " + customMessage.replace("%player%", player.getName()));
+            // Style personnalisé pour le message de déconnexion
+            String styledMessage = ChatColor.translateAlternateColorCodes('&',
+                    "&8&l[&c&l-&8&l] &f" + customMessage.replace("%player%", player.getName()));
+            event.setQuitMessage(styledMessage);
         }
         // Sinon, ne pas modifier pour laisser d'autres plugins gérer le message
     }
@@ -157,5 +174,20 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         userdataConfig.set("joinMessages", joinMessages);
         userdataConfig.set("leaveMessages", leaveMessages);
         saveUserDataFile();
+    }
+
+    /**
+     * Vérifie si un message contient des caractères Unicode.
+     *
+     * @param message Le message à vérifier.
+     * @return true si des caractères Unicode sont trouvés, false sinon.
+     */
+    private boolean containsUnicode(String message) {
+        for (char c : message.toCharArray()) {
+            if (c > 127) { // Vérifie si le caractère est hors de l'ASCII standard
+                return true;
+            }
+        }
+        return false;
     }
 }
