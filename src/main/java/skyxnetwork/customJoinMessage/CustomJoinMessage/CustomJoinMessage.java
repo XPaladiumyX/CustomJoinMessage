@@ -49,36 +49,43 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("joinmessage")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
-                return true;
-            }
-            Player player = (Player) sender;
 
-            if (args.length < 2) {
-                player.sendMessage(ChatColor.RED + "Usage: /joinmessage [set/reset] [join/leave] [message]");
+            if (args.length < 1) {
+                sender.sendMessage(ChatColor.RED + "Usage: /joinmessage [set/reset/show] [join/leave/playername] [message]");
                 return true;
             }
 
             String action = args[0];
-            String type = args[1];
 
-            if ("set".equalsIgnoreCase(action) && args.length >= 3) {
+            if ("set".equalsIgnoreCase(action)) {
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+                    return true;
+                }
+                Player player = (Player) sender;
+
+                if (!player.hasPermission("skyxnetwork.joinmessage.set")) {
+                    player.sendMessage(ChatColor.RED + "You do not have permission to set a custom message.");
+                    return true;
+                }
+
+                if (args.length < 3) {
+                    player.sendMessage(ChatColor.RED + "Usage: /joinmessage set [join/leave] [message]");
+                    return true;
+                }
+
+                String type = args[1];
                 String message = String.join(" ", args).substring(action.length() + type.length() + 2);
 
-                // Validation de la longueur du message
+                // Validation de la longueur et des caractères interdits
                 if (message.length() > 30) {
                     player.sendMessage(ChatColor.RED + "Your custom message cannot exceed 30 characters!");
                     return true;
                 }
-
-                // Validation des caractères Unicode
                 if (containsUnicode(message)) {
                     player.sendMessage(ChatColor.RED + "You can't set Unicode characters in your custom message!");
                     return true;
                 }
-
-                // Validation des codes interdits (&k, &o, &l, &n, &m)
                 if (containsProhibitedFormatting(message)) {
                     player.sendMessage(ChatColor.RED + "You can't use prohibited formatting codes (&k, &o, &l, &n, &m) in your custom message!");
                     return true;
@@ -89,23 +96,42 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                     userdataConfig.set("joinMessages." + player.getName(), message);
                     saveUserDataFile();
 
-                    // Afficher le message de confirmation et l'aperçu
                     String preview = ChatColor.translateAlternateColorCodes('&',
                             "&8&l[&5&l+&8&l] &f" + player.getName() + " " + message);
                     player.sendMessage(ChatColor.GREEN + "Custom join message set!\n" + ChatColor.RESET + preview);
+
                 } else if ("leave".equalsIgnoreCase(type)) {
                     leaveMessages.put(player.getName(), message);
                     userdataConfig.set("leaveMessages." + player.getName(), message);
                     saveUserDataFile();
 
-                    // Afficher le message de confirmation et l'aperçu
                     String preview = ChatColor.translateAlternateColorCodes('&',
                             "&8&l[&c&l-&8&l] &f" + player.getName() + " " + message);
                     player.sendMessage(ChatColor.GREEN + "Custom leave message set!\n" + ChatColor.RESET + preview);
+
                 } else {
                     player.sendMessage(ChatColor.RED + "Invalid type! Use 'join' or 'leave'.");
                 }
+
             } else if ("reset".equalsIgnoreCase(action)) {
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+                    return true;
+                }
+                Player player = (Player) sender;
+
+                if (!player.hasPermission("skyxnetwork.joinmessage.reset")) {
+                    player.sendMessage(ChatColor.RED + "You do not have permission to reset your custom messages.");
+                    return true;
+                }
+
+                if (args.length < 2) {
+                    player.sendMessage(ChatColor.RED + "Usage: /joinmessage reset [join/leave]");
+                    return true;
+                }
+
+                String type = args[1];
+
                 if ("join".equalsIgnoreCase(type)) {
                     joinMessages.remove(player.getName());
                     userdataConfig.set("joinMessages." + player.getName(), null);
@@ -119,8 +145,37 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                 } else {
                     player.sendMessage(ChatColor.RED + "Invalid type! Use 'join' or 'leave'.");
                 }
+
+            } else if ("show".equalsIgnoreCase(action)) {
+                if (!sender.hasPermission("skyxnetwork.joinmessage.show")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to view custom messages.");
+                    return true;
+                }
+
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /joinmessage show [playername]");
+                    return true;
+                }
+
+                String targetName = args[1];
+                String joinMessage = userdataConfig.getString("joinMessages." + targetName);
+                String leaveMessage = userdataConfig.getString("leaveMessages." + targetName);
+
+                sender.sendMessage(ChatColor.YELLOW + "Custom messages for " + targetName + ":");
+                if (joinMessage != null) {
+                    sender.sendMessage(ChatColor.GREEN + "Join message: " + ChatColor.RESET + joinMessage);
+                } else {
+                    sender.sendMessage(ChatColor.RED + "No custom join message set.");
+                }
+
+                if (leaveMessage != null) {
+                    sender.sendMessage(ChatColor.GREEN + "Leave message: " + ChatColor.RESET + leaveMessage);
+                } else {
+                    sender.sendMessage(ChatColor.RED + "No custom leave message set.");
+                }
+
             } else {
-                player.sendMessage(ChatColor.RED + "Usage: /joinmessage [set/reset] [join/leave] [message]");
+                sender.sendMessage(ChatColor.RED + "Invalid action. Usage: /joinmessage [set/reset/show]");
             }
             return true;
         }
@@ -133,12 +188,10 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         String customMessage = joinMessages.get(player.getName());
 
         if (customMessage != null) {
-            // Style personnalisé pour le message de connexion avec le pseudo du joueur
             String styledMessage = ChatColor.translateAlternateColorCodes('&',
                     "&8&l[&5&l+&8&l] &f" + player.getName() + " " + customMessage);
             event.setJoinMessage(styledMessage);
         }
-        // Sinon, ne pas modifier pour laisser d'autres plugins gérer le message
     }
 
     @EventHandler
@@ -147,12 +200,10 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         String customMessage = leaveMessages.get(player.getName());
 
         if (customMessage != null) {
-            // Style personnalisé pour le message de déconnexion avec le pseudo du joueur
             String styledMessage = ChatColor.translateAlternateColorCodes('&',
                     "&8&l[&c&l-&8&l] &f" + player.getName() + " " + customMessage);
             event.setQuitMessage(styledMessage);
         }
-        // Sinon, ne pas modifier pour laisser d'autres plugins gérer le message
     }
 
     private void createUserDataFile() {
@@ -190,27 +241,15 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         saveUserDataFile();
     }
 
-    /**
-     * Vérifie si un message contient des caractères Unicode.
-     *
-     * @param message Le message à vérifier.
-     * @return true si des caractères Unicode sont trouvés, false sinon.
-     */
     private boolean containsUnicode(String message) {
         for (char c : message.toCharArray()) {
-            if (c > 127) { // Vérifie si le caractère est hors de l'ASCII standard
+            if (c > 127) {
                 return true;
             }
         }
         return false;
     }
 
-    /**
-     * Vérifie si un message contient des codes de formatage interdits (&k, &o, &l, &n, &m).
-     *
-     * @param message Le message à vérifier.
-     * @return true si des codes interdits sont trouvés, false sinon.
-     */
     private boolean containsProhibitedFormatting(String message) {
         return message.contains("&k") || message.contains("&o") || message.contains("&l") || message.contains("&n") || message.contains("&m");
     }
