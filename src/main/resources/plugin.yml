@@ -7,12 +7,8 @@ commands:
   joinmessage:
     description: Manage custom join/leave messages.
     usage: /joinmessage [set/reset/show] [join/leave/playername] [message]
-    permission: skyxnetwork.joinmessage
-    permission-message: You do not have permission to use this command.
+    aliases: [ jm ]
 permissions:
-  skyxnetwork.joinmessage:
-    description: Base permission for the joinmessage command.
-    default: false
   skyxnetwork.joinmessage.set:
     description: Allows players to set a custom join or leave message.
     default: op
