@@ -78,6 +78,12 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                     return true;
                 }
 
+                // Validation des codes interdits (&k, &o, &l, &n, &m)
+                if (containsProhibitedFormatting(message)) {
+                    player.sendMessage(ChatColor.RED + "You can't use prohibited formatting codes (&k, &o, &l, &n, &m) in your custom message!");
+                    return true;
+                }
+
                 if ("join".equalsIgnoreCase(type)) {
                     joinMessages.put(player.getName(), message);
                     userdataConfig.set("joinMessages." + player.getName(), message);
@@ -85,7 +91,7 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
                     // Afficher le message de confirmation et l'aperçu
                     String preview = ChatColor.translateAlternateColorCodes('&',
-                            "&8&l[&5&l+&8&l] &f" + message.replace("%player%", player.getName()));
+                            "&8&l[&5&l+&8&l] &f" + player.getName() + " " + message);
                     player.sendMessage(ChatColor.GREEN + "Custom join message set!\n" + ChatColor.RESET + preview);
                 } else if ("leave".equalsIgnoreCase(type)) {
                     leaveMessages.put(player.getName(), message);
@@ -94,7 +100,7 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
                     // Afficher le message de confirmation et l'aperçu
                     String preview = ChatColor.translateAlternateColorCodes('&',
-                            "&8&l[&c&l-&8&l] &f" + message.replace("%player%", player.getName()));
+                            "&8&l[&c&l-&8&l] &f" + player.getName() + " " + message);
                     player.sendMessage(ChatColor.GREEN + "Custom leave message set!\n" + ChatColor.RESET + preview);
                 } else {
                     player.sendMessage(ChatColor.RED + "Invalid type! Use 'join' or 'leave'.");
@@ -127,9 +133,9 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         String customMessage = joinMessages.get(player.getName());
 
         if (customMessage != null) {
-            // Style personnalisé pour le message de connexion
+            // Style personnalisé pour le message de connexion avec le pseudo du joueur
             String styledMessage = ChatColor.translateAlternateColorCodes('&',
-                    "&8&l[&5&l+&8&l] &f" + customMessage.replace("%player%", player.getName()));
+                    "&8&l[&5&l+&8&l] &f" + player.getName() + " " + customMessage);
             event.setJoinMessage(styledMessage);
         }
         // Sinon, ne pas modifier pour laisser d'autres plugins gérer le message
@@ -141,9 +147,9 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         String customMessage = leaveMessages.get(player.getName());
 
         if (customMessage != null) {
-            // Style personnalisé pour le message de déconnexion
+            // Style personnalisé pour le message de déconnexion avec le pseudo du joueur
             String styledMessage = ChatColor.translateAlternateColorCodes('&',
-                    "&8&l[&c&l-&8&l] &f" + customMessage.replace("%player%", player.getName()));
+                    "&8&l[&c&l-&8&l] &f" + player.getName() + " " + customMessage);
             event.setQuitMessage(styledMessage);
         }
         // Sinon, ne pas modifier pour laisser d'autres plugins gérer le message
@@ -197,5 +203,15 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
             }
         }
         return false;
+    }
+
+    /**
+     * Vérifie si un message contient des codes de formatage interdits (&k, &o, &l, &n, &m).
+     *
+     * @param message Le message à vérifier.
+     * @return true si des codes interdits sont trouvés, false sinon.
+     */
+    private boolean containsProhibitedFormatting(String message) {
+        return message.contains("&k") || message.contains("&o") || message.contains("&l") || message.contains("&n") || message.contains("&m");
     }
 }
