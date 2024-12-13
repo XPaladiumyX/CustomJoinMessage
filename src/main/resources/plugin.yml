@@ -12,7 +12,7 @@ commands:
 permissions:
   skyxnetwork.joinmessage:
     description: Base permission for the joinmessage command.
-    default: true
+    default: false
   skyxnetwork.joinmessage.set:
     description: Allows players to set a custom join or leave message.
     default: op
