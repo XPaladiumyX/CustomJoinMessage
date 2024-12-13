@@ -1,4 +1,4 @@
-package com.example.customjoinmessage;
+package skyxnetwork.customJoinMessage.CustomJoinMessage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -104,22 +104,24 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String customMessage = joinMessages.get(player.getName());
+
         if (customMessage != null) {
+            // Si un message personnalisé est défini, utilisez-le
             event.setJoinMessage(ChatColor.GREEN + "[+] " + customMessage.replace("%player%", player.getName()));
-        } else {
-            event.setJoinMessage(null); // Let another plugin handle the default message
         }
+        // Sinon, ne pas modifier pour laisser d'autres plugins gérer le message
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         String customMessage = leaveMessages.get(player.getName());
+
         if (customMessage != null) {
+            // Si un message personnalisé est défini, utilisez-le
             event.setQuitMessage(ChatColor.RED + "[-] " + customMessage.replace("%player%", player.getName()));
-        } else {
-            event.setQuitMessage(null); // Let another plugin handle the default message
         }
+        // Sinon, ne pas modifier pour laisser d'autres plugins gérer le message
     }
 
     private void createUserDataFile() {
