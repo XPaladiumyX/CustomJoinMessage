@@ -1,0 +1,7 @@
+joinMessages:
+  PlayerOne: "%player% has joined the adventure!"
+  PlayerTwo: "Welcome back, %player%! We've missed you."
+
+leaveMessages:
+  PlayerOne: "%player% has left the game. Farewell!"
+  PlayerTwo: "Goodbye, %player%! See you soon."
