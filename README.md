@@ -40,6 +40,10 @@ CustomJoinMessage is a lightweight and highly configurable Minecraft plugin desi
 /joinmessage reset [join/leave] - Resets a custom join or leave message.  
 
     Permission: skyxnetwork.customjoinmessage.reset  
+    
+/joinmessage show {playername} - Allows players to view custom join/leave messages for a specific player.  
+
+    Permission: skyxnetwork.joinmessage.show  
 
 ## Installation  
 
