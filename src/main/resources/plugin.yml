@@ -6,7 +6,7 @@ description: A plugin to manage custom join/leave messages.
 commands:
   joinmessage:
     description: Manage custom join/leave messages.
-    usage: /joinmessage [set/reset/show] [join/leave/playername] [message]
+    usage: /joinmessage [set/reset/show/reload] [join/leave/playername] [message]
     aliases: [ jm ]
 permissions:
   skyxnetwork.joinmessage.set:
@@ -17,4 +17,7 @@ permissions:
     default: op
   skyxnetwork.joinmessage.show:
     description: Allows players to view custom join/leave messages for a specific player.
+    default: op
+  skyxnetwork.joinmessage.reload:
+    description: Allows reloading the configuration and userdata.
     default: op
