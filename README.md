@@ -17,7 +17,7 @@ CustomJoinMessage is a lightweight and highly configurable Minecraft plugin desi
 - Supports Other CustomJoinMessage Plugins: Works seamlessly with other custom join message plugins.  
 - Easy Installation: No additional dependencies required; it’s ready to use out of the box.  
 - Color Support Example : /jm set join &cThe &bG.O.A.T is There!  
-- A Character Limit to 30 to avoid players set too long join messages.  
+- A Character Limit to 40 to avoid players set too long join messages.  
 
 ## Commands and Permissions  
 
