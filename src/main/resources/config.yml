@@ -1,2 +1,9 @@
 # The main plugin prefix.
 Prefix: "§dSky X §9Network §eJoinMessage §8●⏺ "
+
+# Bad Words Filter
+Filter:
+  - Fuck
+  - Bitch
+  - Sex
+  - Nigger
