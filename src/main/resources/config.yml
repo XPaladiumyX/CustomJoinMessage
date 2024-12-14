@@ -3,7 +3,64 @@ Prefix: "§dSky X §9Network §eJoinMessage §8●⏺ "
 
 # Bad Words Filter
 Filter:
-  - Fuck
+  - asshole
+  - 4sshole
+  - a$$hole
+  - AsShOlE
+  - a$$h0le
+  - a5shole
+  - bastard
+  - b4stard
+  - b@stard
+  - b@st4rd
+  - b4$tard
   - Bitch
+  - b1tch
+  - b!tch
+  - cock
+  - c0ck
+  - c**k
+  - C0cK
+  - C@ck
+  - C0**k
+  - cunt
+  - c4nt
+  - c**t
+  - C@nt
+  - dick
+  - d1ck
+  - d!ck
+  - fag
+  - f4g
+  - f@g
+  - f@ggot
+  - Fuck
+  - f4ck
+  - phuck
+  - f**ck
+  - f**k
+  - motherfucker
+  - m0therfucker
+  - m0th3rfuck3r
+  - M0th3rF**ker
+  - M0ThErfUcKeR
+  - M0thErF@cker
+  - shit
+  - sh1t
+  - sh!t
+  - s**t
+  - slut
+  - s1ut
+  - s!ut
   - Sex
+  - s3x
+  - s@x
   - Nigger
+  - Nigg3r
+  - N1gg3r
+  - N!gg3r
+  - Ni99er
+  - whore
+  - wh0re
+  - w!hore
+  - w0r3
