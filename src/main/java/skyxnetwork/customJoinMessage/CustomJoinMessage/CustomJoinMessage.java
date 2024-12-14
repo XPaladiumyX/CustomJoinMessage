@@ -99,6 +99,25 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
             String action = args[0];
 
+            if ("reload".equalsIgnoreCase(action)) {
+                if (!sender.hasPermission("skyxnetwork.joinmessage.reload")) {
+                    sender.sendMessage(pluginPrefix + ChatColor.RED + "You do not have permission to reload the configuration.");
+                    return true;
+                }
+
+                // Recharge le fichier config.yml
+                reloadConfig();
+                pluginPrefix = getConfig().getString("Prefix", "§dSky X §9Network §eJoinMessage §8●⏺ ");
+                badWordsFilter = getConfig().getStringList("Filter");
+
+                // Recharge le fichier userdata.yml
+                userdataConfig = YamlConfiguration.loadConfiguration(userdataFile);
+                loadMessages();
+
+                sender.sendMessage(pluginPrefix + ChatColor.GREEN + "Configuration and userdata successfully reloaded!");
+                return true;
+            }
+
             if ("set".equalsIgnoreCase(action)) {
                 if (!(sender instanceof Player)) {
                     sender.sendMessage(pluginPrefix + ChatColor.RED + "This command can only be used by players.");
