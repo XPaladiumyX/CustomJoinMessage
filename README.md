@@ -9,13 +9,13 @@ Developed by ✨ | Sky X Network | ✨
 CustomJoinMessage is a lightweight and highly configurable Minecraft plugin designed specifically for Paper 1.20-1.20.1 servers. It allows server admins to customize player join and leave messages, featuring a powerful filter to block inappropriate words and characters. The plugin supports permissions management and integrates seamlessly with other custom join message plugins, making it an ideal solution for server owners looking to offer a personalized and safe player experience.  
 ## Features  
 
-    Powerful Filter: Built-in filter to block special words, insults, and characters.  
-    Custom Messages: Customize player join and leave messages.  
-    Permissions Support: Fully compatible with popular permissions management plugins like LuckPerms, PermissionsEx, etc.  
-    Quick Command: Use /jm as a faster alternative to /joinmessage for managing custom messages.  
-    Configurable Prefix: Easily change the plugin's prefix via the config.yml file.  
-    Supports Other CustomJoinMessage Plugins: Works seamlessly with other custom join message plugins.  
-    Easy Installation: No additional dependencies required; it’s ready to use out of the box.  
+- Powerful Filter: Built-in filter to block special words, insults, and characters.  
+- Custom Messages: Customize player join and leave messages.  
+- Permissions Support: Fully compatible with popular permissions management plugins like LuckPerms, PermissionsEx, etc.  
+- Quick Command: Use /jm as a faster alternative to /joinmessage for managing custom messages.  
+- Configurable Prefix: Easily change the plugin's prefix via the config.yml file.  
+- Supports Other CustomJoinMessage Plugins: Works seamlessly with other custom join message plugins.  
+- Easy Installation: No additional dependencies required; it’s ready to use out of the box.  
 
 ## Commands and Permissions  
 
