@@ -7,10 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -25,9 +22,34 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
     private final Map<String, String> joinMessages = new HashMap<>();
     private final Map<String, String> leaveMessages = new HashMap<>();
+    private String pluginPrefix;
+    private static final String ANSI_MAGENTA = "\u001B[35m";
+    private static final String ANSI_LIGHT_GRAY = "\u001B[37m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_LIGHT_GREEN = "\u001B[92m";
+    private static final String ANSI_RED = "\u001B[31m";
+
 
     @Override
     public void onEnable() {
+        Bukkit.getLogger().info(ANSI_LIGHT_GRAY + "︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹");
+        Bukkit.getLogger().info(ANSI_MAGENTA + " _______  ___   _  __   __    __   __    __    _  _______  _______ " + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "|       ||   | | ||  | |  |  |  |_|  |  |  |  | ||       ||       |" + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "|  _____||   |_| ||  |_|  |  |       |  |   |_| ||    ___||_     _|" + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "| |_____ |      _||       |  |       |  |       ||   |___   |   |  " + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "|_____  ||     |_ |_     _|   |     |   |  _    ||    ___|  |   |  " + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + " _____| ||    _  |  |   |    |   _   |  | | |   ||   |___   |   |  " + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "|_______||___| |_|  |___|    |__| |__|  |_|  |__||_______|  |___|  " + ANSI_RESET);
+        Bukkit.getLogger().info("   ");
+        Bukkit.getLogger().info(ANSI_LIGHT_GREEN + "Plugin CustomJoinMessage enabled !");
+        Bukkit.getLogger().info(ANSI_LIGHT_GRAY + "︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺");
+
+        // Save the default config if it doesn't exist
+        saveDefaultConfig();
+
+        // Load the plugin prefix
+        pluginPrefix = getConfig().getString("Prefix", "§dSky X §9Network §bCOMMANDS §8●⏺ ");
+
         // Initialize userdata file
         createUserDataFile();
 
@@ -36,14 +58,25 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
         // Register the event listener
         Bukkit.getPluginManager().registerEvents(this, this);
-        getLogger().info("CustomJoinMessage has been enabled.");
+        getLogger().info(pluginPrefix + "CustomJoinMessage has been enabled.");
     }
 
     @Override
     public void onDisable() {
+        Bukkit.getLogger().info(ANSI_LIGHT_GRAY + "︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹︹");
+        Bukkit.getLogger().info(ANSI_MAGENTA + " _______  ___   _  __   __    __   __    __    _  _______  _______ " + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "|       ||   | | ||  | |  |  |  |_|  |  |  |  | ||       ||       |" + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "|  _____||   |_| ||  |_|  |  |       |  |   |_| ||    ___||_     _|" + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "| |_____ |      _||       |  |       |  |       ||   |___   |   |  " + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "|_____  ||     |_ |_     _|   |     |   |  _    ||    ___|  |   |  " + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + " _____| ||    _  |  |   |    |   _   |  | | |   ||   |___   |   |  " + ANSI_RESET);
+        Bukkit.getLogger().info(ANSI_MAGENTA + "|_______||___| |_|  |___|    |__| |__|  |_|  |__||_______|  |___|  " + ANSI_RESET);
+        Bukkit.getLogger().info("   ");
+        Bukkit.getLogger().info(ANSI_RED + "  Plugin CustomJoinMessage disabled !");
+        Bukkit.getLogger().info(ANSI_LIGHT_GRAY + "︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺︺");
         // Save messages to userdata.yml
         saveMessages();
-        getLogger().info("CustomJoinMessage has been disabled.");
+        getLogger().info(pluginPrefix + "CustomJoinMessage has been disabled.");
     }
 
     @Override
@@ -51,7 +84,7 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         if (command.getName().equalsIgnoreCase("joinmessage")) {
 
             if (args.length < 1) {
-                sender.sendMessage(ChatColor.RED + "Usage: /joinmessage [set/reset/show] [join/leave/playername] [message]");
+                sender.sendMessage(pluginPrefix + ChatColor.RED + "Usage: /joinmessage [set/reset/show] [join/leave/playername] [message]");
                 return true;
             }
 
@@ -59,18 +92,18 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
             if ("set".equalsIgnoreCase(action)) {
                 if (!(sender instanceof Player)) {
-                    sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+                    sender.sendMessage(pluginPrefix + ChatColor.RED + "This command can only be used by players.");
                     return true;
                 }
                 Player player = (Player) sender;
 
                 if (!player.hasPermission("skyxnetwork.joinmessage.set")) {
-                    player.sendMessage(ChatColor.RED + "You do not have permission to set a custom message.");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "You do not have permission to set a custom message.");
                     return true;
                 }
 
                 if (args.length < 3) {
-                    player.sendMessage(ChatColor.RED + "Usage: /joinmessage set [join/leave] [message]");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "Usage: /joinmessage set [join/leave] [message]");
                     return true;
                 }
 
@@ -79,15 +112,15 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
                 // Validation de la longueur et des caractères interdits
                 if (message.length() > 30) {
-                    player.sendMessage(ChatColor.RED + "Your custom message cannot exceed 30 characters!");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "Your custom message cannot exceed 30 characters!");
                     return true;
                 }
                 if (containsUnicode(message)) {
-                    player.sendMessage(ChatColor.RED + "You can't set Unicode characters in your custom message!");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "You can't set Unicode characters in your custom message!");
                     return true;
                 }
                 if (containsProhibitedFormatting(message)) {
-                    player.sendMessage(ChatColor.RED + "You can't use prohibited formatting codes (&k, &o, &l, &n, &m) in your custom message!");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "You can't use prohibited formatting codes (&k, &o, &l, &n, &m) in your custom message!");
                     return true;
                 }
 
@@ -98,7 +131,7 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
                     String preview = ChatColor.translateAlternateColorCodes('&',
                             "&8&l[&5&l+&8&l] &f" + player.getName() + " " + message);
-                    player.sendMessage(ChatColor.GREEN + "Custom join message set!\n" + ChatColor.RESET + preview);
+                    player.sendMessage(pluginPrefix + ChatColor.GREEN + "Custom join message set!\n" + ChatColor.RESET + preview);
 
                 } else if ("leave".equalsIgnoreCase(type)) {
                     leaveMessages.put(player.getName(), message);
@@ -107,26 +140,26 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
                     String preview = ChatColor.translateAlternateColorCodes('&',
                             "&8&l[&c&l-&8&l] &f" + player.getName() + " " + message);
-                    player.sendMessage(ChatColor.GREEN + "Custom leave message set!\n" + ChatColor.RESET + preview);
+                    player.sendMessage(pluginPrefix + ChatColor.GREEN + "Custom leave message set!\n" + ChatColor.RESET + preview);
 
                 } else {
-                    player.sendMessage(ChatColor.RED + "Invalid type! Use 'join' or 'leave'.");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "Invalid type! Use 'join' or 'leave'.");
                 }
 
             } else if ("reset".equalsIgnoreCase(action)) {
                 if (!(sender instanceof Player)) {
-                    sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+                    sender.sendMessage(pluginPrefix + ChatColor.RED + "This command can only be used by players.");
                     return true;
                 }
                 Player player = (Player) sender;
 
                 if (!player.hasPermission("skyxnetwork.joinmessage.reset")) {
-                    player.sendMessage(ChatColor.RED + "You do not have permission to reset your custom messages.");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "You do not have permission to reset your custom messages.");
                     return true;
                 }
 
                 if (args.length < 2) {
-                    player.sendMessage(ChatColor.RED + "Usage: /joinmessage reset [join/leave]");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "Usage: /joinmessage reset [join/leave]");
                     return true;
                 }
 
@@ -136,24 +169,24 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                     joinMessages.remove(player.getName());
                     userdataConfig.set("joinMessages." + player.getName(), null);
                     saveUserDataFile();
-                    player.sendMessage(ChatColor.GREEN + "Custom join message reset!");
+                    player.sendMessage(pluginPrefix + ChatColor.GREEN + "Custom join message reset!");
                 } else if ("leave".equalsIgnoreCase(type)) {
                     leaveMessages.remove(player.getName());
                     userdataConfig.set("leaveMessages." + player.getName(), null);
                     saveUserDataFile();
-                    player.sendMessage(ChatColor.GREEN + "Custom leave message reset!");
+                    player.sendMessage(pluginPrefix + ChatColor.GREEN + "Custom leave message reset!");
                 } else {
-                    player.sendMessage(ChatColor.RED + "Invalid type! Use 'join' or 'leave'.");
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "Invalid type! Use 'join' or 'leave'.");
                 }
 
             } else if ("show".equalsIgnoreCase(action)) {
                 if (!sender.hasPermission("skyxnetwork.joinmessage.show")) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to view custom messages.");
+                    sender.sendMessage(pluginPrefix + ChatColor.RED + "You do not have permission to view custom messages.");
                     return true;
                 }
 
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /joinmessage show [playername]");
+                    sender.sendMessage(pluginPrefix + ChatColor.RED + "Usage: /joinmessage show [playername]");
                     return true;
                 }
 
@@ -161,7 +194,7 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                 String joinMessage = userdataConfig.getString("joinMessages." + targetName);
                 String leaveMessage = userdataConfig.getString("leaveMessages." + targetName);
 
-                sender.sendMessage(ChatColor.YELLOW + "Custom messages for " + targetName + ":");
+                sender.sendMessage(pluginPrefix + ChatColor.YELLOW + "Custom messages for " + targetName + ":");
                 if (joinMessage != null) {
                     sender.sendMessage(ChatColor.GREEN + "Join message: " + ChatColor.RESET + joinMessage);
                 } else {
@@ -175,35 +208,11 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                 }
 
             } else {
-                sender.sendMessage(ChatColor.RED + "Invalid action. Usage: /joinmessage [set/reset/show]");
+                sender.sendMessage(pluginPrefix + ChatColor.RED + "Invalid action. Usage: /joinmessage [set/reset/show]");
             }
             return true;
         }
         return false;
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        String customMessage = joinMessages.get(player.getName());
-
-        if (customMessage != null) {
-            String styledMessage = ChatColor.translateAlternateColorCodes('&',
-                    "&8&l[&5&l+&8&l] &f" + player.getName() + " " + customMessage);
-            event.setJoinMessage(styledMessage);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        String customMessage = leaveMessages.get(player.getName());
-
-        if (customMessage != null) {
-            String styledMessage = ChatColor.translateAlternateColorCodes('&',
-                    "&8&l[&c&l-&8&l] &f" + player.getName() + " " + customMessage);
-            event.setQuitMessage(styledMessage);
-        }
     }
 
     private void createUserDataFile() {
