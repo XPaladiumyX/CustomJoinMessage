@@ -122,12 +122,12 @@ Filter:
 ```
 ## Supported Permission Manager Plugins  
 
-    LuckPerms  
-    PermissionsEx  
-    UltraPermissions  
-    GroupManager  
-    ZPermissions  
-    CommandBook  
+- LuckPerms  
+- PermissionsEx  
+- UltraPermissions  
+- GroupManager  
+- ZPermissions  
+- CommandBook  
 
 # Disclaimer  
 
