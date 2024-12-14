@@ -115,6 +115,10 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                     player.sendMessage(pluginPrefix + ChatColor.RED + "Your custom message cannot exceed 30 characters!");
                     return true;
                 }
+                if (!isMessageValid(message)) {
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "Your message can only contain letters, numbers, spaces, and common symbols.");
+                    return true;
+                }
                 if (containsUnicode(message)) {
                     player.sendMessage(pluginPrefix + ChatColor.RED + "You can't set Unicode characters in your custom message!");
                     return true;
@@ -257,6 +261,10 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
             }
         }
         return false;
+    }
+
+    private boolean isMessageValid(String message) {
+        return message.matches("^[a-zA-Z0-9 .,!?\"'()@#$%^&*_-]+$");
     }
 
     private boolean containsProhibitedFormatting(String message) {
