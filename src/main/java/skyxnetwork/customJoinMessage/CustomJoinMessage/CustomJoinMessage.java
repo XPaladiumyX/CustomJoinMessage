@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CustomJoinMessage extends JavaPlugin implements Listener {
@@ -25,6 +26,7 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
     private final Map<String, String> joinMessages = new HashMap<>();
     private final Map<String, String> leaveMessages = new HashMap<>();
+    private List<String> badWordsFilter;
     private String pluginPrefix;
     private static final String ANSI_MAGENTA = "\u001B[35m";
     private static final String ANSI_LIGHT_GRAY = "\u001B[37m";
@@ -58,6 +60,10 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
         // Load messages from userdata.yml
         loadMessages();
+
+        // Load chat filter from config.yml
+        badWordsFilter = getConfig().getStringList("Filter");
+
 
         // Register the event listener
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -129,6 +135,11 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                 // Validation : caractères autorisés uniquement
                 if (!isMessageValid(message)) {
                     player.sendMessage(pluginPrefix + ChatColor.RED + "Your message can only contain letters, numbers, spaces, and common symbols.");
+                    return true;
+                }
+                // Validation : mots interdits
+                if (containsBadWords(message)) {
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "Your message contains inappropriate language and cannot be set!");
                     return true;
                 }
 
@@ -306,5 +317,14 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
 
     private boolean isMessageValid(String message) {
         return message.matches("^[a-zA-Z0-9 .,!?\"'()@#$%^&*_-]+$");
+    }
+
+    private boolean containsBadWords(String message) {
+        for (String badWord : badWordsFilter) {
+            if (message.toLowerCase().contains(badWord.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
