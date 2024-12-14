@@ -7,7 +7,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -115,16 +118,17 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
                     player.sendMessage(pluginPrefix + ChatColor.RED + "Your custom message cannot exceed 30 characters!");
                     return true;
                 }
-                if (!isMessageValid(message)) {
-                    player.sendMessage(pluginPrefix + ChatColor.RED + "Your message can only contain letters, numbers, spaces, and common symbols.");
-                    return true;
-                }
                 if (containsUnicode(message)) {
                     player.sendMessage(pluginPrefix + ChatColor.RED + "You can't set Unicode characters in your custom message!");
                     return true;
                 }
                 if (containsProhibitedFormatting(message)) {
                     player.sendMessage(pluginPrefix + ChatColor.RED + "You can't use prohibited formatting codes (&k, &o, &l, &n, &m) in your custom message!");
+                    return true;
+                }
+                // Validation : caractères autorisés uniquement
+                if (!isMessageValid(message)) {
+                    player.sendMessage(pluginPrefix + ChatColor.RED + "Your message can only contain letters, numbers, spaces, and common symbols.");
                     return true;
                 }
 
@@ -219,6 +223,39 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         return false;
     }
 
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        String customMessage = joinMessages.get(player.getName());
+
+        if (customMessage != null) {
+            // Crée un message formaté pour l'événement de connexion
+            String formattedMessage = ChatColor.translateAlternateColorCodes('&',
+                    "&8&l[&5&l+&8&l] &f" + player.getName() + " " + customMessage);
+            event.setJoinMessage(formattedMessage);
+        } else {
+            // Si aucun message personnalisé, laisser un autre plugin gérer cela ou rien afficher
+            event.setJoinMessage(null);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        String customMessage = leaveMessages.get(player.getName());
+
+        if (customMessage != null) {
+            // Crée un message formaté pour l'événement de déconnexion
+            String formattedMessage = ChatColor.translateAlternateColorCodes('&',
+                    "&8&l[&c&l-&8&l] &f" + player.getName() + " " + customMessage);
+            event.setQuitMessage(formattedMessage);
+        } else {
+            // Si aucun message personnalisé, laisser un autre plugin gérer cela ou rien afficher
+            event.setQuitMessage(null);
+        }
+    }
+
+
     private void createUserDataFile() {
         userdataFile = new File(getDataFolder(), "userdata.yml");
         if (!userdataFile.exists()) {
@@ -263,11 +300,11 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
         return false;
     }
 
-    private boolean isMessageValid(String message) {
-        return message.matches("^[a-zA-Z0-9 .,!?\"'()@#$%^&*_-]+$");
-    }
-
     private boolean containsProhibitedFormatting(String message) {
         return message.contains("&k") || message.contains("&o") || message.contains("&l") || message.contains("&n") || message.contains("&m");
+    }
+
+    private boolean isMessageValid(String message) {
+        return message.matches("^[a-zA-Z0-9 .,!?\"'()@#$%^&*_-]+$");
     }
 }
