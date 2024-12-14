@@ -21,11 +21,11 @@ CustomJoinMessage is a lightweight and highly configurable Minecraft plugin desi
 
 /jm - Quick command to manage custom messages.  
 
-    Permission: skyxnetwork.customjoinmessage.manage  
+    Permission: No Permission 
 
 /joinmessage - Main command to manage join and leave custom messages.  
 
-    Permission: skyxnetwork.customjoinmessage.manage  
+    Permission: No Permission  
 
 /joinmessage reload - Reloads the plugin's configuration.  
 
