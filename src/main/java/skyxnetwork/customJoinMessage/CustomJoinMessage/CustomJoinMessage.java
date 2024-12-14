@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -339,11 +340,24 @@ public class CustomJoinMessage extends JavaPlugin implements Listener {
     }
 
     private boolean containsBadWords(String message) {
+        // Normalisation du message pour enlever les caractères non visibles et les espaces
+        String normalizedMessage = normalizeMessage(message);
+
+        // Vérifier les mots interdits dans le message normalisé
         for (String badWord : badWordsFilter) {
-            if (message.toLowerCase().contains(badWord.toLowerCase())) {
+            // Vérifier si le mot interdit est présent dans le message normalisé
+            if (normalizedMessage.contains(badWord.toLowerCase())) {
                 return true;
             }
         }
         return false;
+    }
+
+    private String normalizeMessage(String message) {
+        // Supprime tous les espaces et normalise les caractères (enlève les accents et caractères spéciaux)
+        String normalizedMessage = message.replaceAll("\\s+", "");  // Supprime tous les espaces
+        normalizedMessage = Normalizer.normalize(normalizedMessage, Normalizer.Form.NFD);  // Normalise les caractères (accents, etc.)
+        normalizedMessage = normalizedMessage.replaceAll("[^\\p{ASCII}]", "");  // Enlève les caractères non-ASCII
+        return normalizedMessage.toLowerCase();  // Convertit tout en minuscules pour éviter les problèmes de casse
     }
 }
